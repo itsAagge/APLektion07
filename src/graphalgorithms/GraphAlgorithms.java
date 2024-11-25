@@ -29,11 +29,11 @@ public class GraphAlgorithms {
         System.out.println();
 
         System.out.println("DFS traversal using a stack starting in 123:");
-        System.out.println(dfsStack(g, 123));
+        //System.out.println(dfsStack(g, 123));
         System.out.println();
 
         System.out.println("BFS: Breth-First traversal starting in 123:");
-        System.out.println(bfs(g, 123));
+        //System.out.println(bfs(g, 123));
         System.out.println();
 
 //        System.out.println("Graph is connected?");
@@ -70,7 +70,7 @@ public class GraphAlgorithms {
         visited.add(v);
         for (V w : graph.neighbors(v)) {
             if (!visited.contains(w)) {
-                dfs(graph, v, visited);
+                dfs(graph, w, visited);
             }
         }
     }
@@ -99,8 +99,30 @@ public class GraphAlgorithms {
      * Return a minimum spanning tree (MST).
      */
     public static <V> List<Edge<V>> mst(Graph<V> graph) {
-        // TODO
-        return null;
+        List<LinkedHashSet<V>> cSets = new ArrayList<>();
+        for (V vertex : graph.vertices()) {
+            cSets.add(new LinkedHashSet<>(List.of(vertex)));
+        }
+        Queue<Edge<V>> q = new PriorityQueue<>(Comparator.comparingInt(Edge::getWeight));
+        q.addAll(graph.edges());
+        List<Edge<V>> t = new ArrayList<>();
+        while (t.size() < graph.vertices().size() - 1) {
+            Edge<V> e = q.remove();
+            V u = e.getU();
+            V v = e.getV();
+            HashSet<V> uSet = new LinkedHashSet<>();
+            HashSet<V> vSet = new LinkedHashSet<>();
+            for (LinkedHashSet<V> cSet : cSets) {
+                if (cSet.contains(u)) uSet = cSet;
+                if (cSet.contains(v)) vSet = cSet;
+            }
+            if (!uSet.equals(vSet)) {
+                t.add(e);
+                uSet.addAll(vSet);
+                cSets.remove(vSet);
+            }
+        }
+        return t;
     }
 
     /**

@@ -123,6 +123,7 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
      */
     @Override
     public void addVertex(V v) {
+        assert !vertices.containsKey(v);
         if (matrixSize == matrixCapacity) extendMatrix();
         vertices.put(v, matrixSize++);
     }
@@ -169,6 +170,7 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
      */
     @Override
     public void removeVertex(V v) {
+        assert vertices.containsKey(v);
         int indexOfRemoved = vertices.get(v);
         for (int i = 0; i < matrix.length - 1; i++) {
             if (i > indexOfRemoved) matrix[i] = matrix[i + 1];
